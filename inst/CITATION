@@ -1,0 +1,15 @@
+citHeader("Please cite the papers below. Thank you for using QuaternaryProd.")
+
+
+citEntry(entry = "Article",
+  title        = "A Free Energy Based Approach for Distance Metric Learning",
+  author       = personList(as.person("Carl Tony Fakhry"),
+                            as.person("Ping Chen"),
+                            as.person("Rahul Kulkarni"),
+                            as.person("Kourosh Zarringhalam")),
+  journal      = "Submitted",
+  year         = 2018,
+  textVersion  = "Carl Tony Fakhry, Ping Chen, Rahul Kulkarni and Kourosh Zarringhalam. 'A Free Energy Based Approach for Distance Metric Learning, Submitted."
+)
+
+

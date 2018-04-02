@@ -1,0 +1,37 @@
+Package: DistanceLearning
+Type: Package
+Title: An R package that implements 11 distance metric learning methods
+Version: 1.0.0
+Date: 2016-07-25
+Authors@R: c(
+    person("Carl Tony", "Fakhry", email = "cfakhry@cs.umb.edu", role = c("cre","aut")),
+    person("Ping", "Chen", role = "ths"),
+    person("Kulkarni", "Rahul", role = "ths"),
+    person("Kourosh", "Zarringhalam", role = c("aut","ths")))
+Maintainer: <cfakhry@cs.umb.edu>
+Description: This package implements 11 popular distance metric
+       learning methods. The methods are:
+       Free Energy Nearest Neighbor (FENN),
+       Free Energy Nearest Neighbor with dimension reduction (subFENN),
+       Discriminant Adaptive Nearest Neighbor (DANN),
+       iterative Discriminant Adaptive Nearest Neighbor (iDANN),
+       Locally Adaptive Metric Nearest Neighbor (ADAMENN),
+       Locally Adaptive Metric Nearest Neighbor (iADAMENN),
+       Xing's method,
+       Relevant Component Analaysis (RCA),
+       Linear Fisher Discriminant Analaysis (LFDA),
+       Discriminant Component Analaysis (DCA),
+       Neighborhood Component Analysis (NCA).
+       All methods are implemented using RcppArmadillo in order to attain improved performance.
+       A vignette detailing the usage of each method is attached to the package.
+License: GPL (>=3)
+Depends:
+    R (>= 3.2.0),
+    RcppArmadillo,
+    class,
+    caret
+LinkingTo: Rcpp, RcppArmadillo
+Imports: Rcpp
+LazyData: TRUE
+RoxygenNote: 6.0.1.9000
+SystemRequirements: C++11
