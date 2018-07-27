@@ -142,18 +142,6 @@ arma::vec getMuVec(arma::vec Energies){
     return MuVec;
   }
 
-  // dd = E_tilde_S$values
-  //   dd[which(abs(dd) < 1e-8)] = 0 ## Another attempt to fix eignvalue instability
-  //   dn = max(dd)
-  //   d0 = min(dd)
-  //   d = dd - d0
-  //   d.ind = which(sort(d) > 0)
-  //   d = sort(d)[c((d.ind[1] - 1), d.ind)]
-  // gaps = 1:(length(d)-1) / sort(d)[2:length(d)]
-  // max.ind = which(gaps[2:length(gaps)] / gaps[1:(length(gaps) - 1)] < 1e-3)[1] + 1
-  // if(is.na(max.ind)){
-  //   max.ind = length(d)
-  // }
 
   // Figure out where the big jumps in the eigenvalues occur
   arma::uvec slice = arma::linspace<arma::uvec>(1, XtildeS_eigvals.n_elem - 1, XtildeS_eigvals.n_elem - 1);
@@ -179,48 +167,6 @@ arma::vec getMuVec(arma::vec Energies){
   }
 
 
-  // muVec = sort(c(seq(sort(d)[2]/100, (sort(d)[2]/2 - sort(d)[2]/100), length.out = 20),
-  //                sort(d)[2:max.ind],
-  //                       (sort(d)[2:max.ind] + 2*sort(d)[1:(max.ind - 1)]) / 3 ,
-  //                       (sort(d)[2:max.ind] + sort(d)[1:(max.ind - 1)]) / 2,
-  //                       (2*sort(d)[2:max.ind] + sort(d)[1:(max.ind - 1)]) / 3,
-  //                       seq(sort(d)[max.ind]+sort(d)[2]/100, sort(d)[max.ind]*10, length.out = 20)))
-
-  // Take some values before the smallest eigenvalue
-  // int range = std::max(XtildeS_eigvals.n_elem, 20);
-
-  // std::cout << max_ind <<  " " << XtildeS_eigvals.n_elem << std::endl;
-  // arma::vec carl1 = XtildeS_eigvals.rows(1, max_ind);
-  // arma::vec carl2 = XtildeS_eigvals.rows(0, max_ind-1);
-  // std::cout << carl1.n_elem << " " << carl2.n_elem << std::endl;
-
-
-  // int range = 20;
-  // arma::vec temp1 = arma::linspace<arma::vec>(XtildeS_eigvals[1]/100, XtildeS_eigvals[1]/2.0 - XtildeS_eigvals[1]/100, range);
-  // // std::cout << "carl1" << std::endl;
-  // arma::vec temp2 = (XtildeS_eigvals.rows(1, max_ind) + 2 * XtildeS_eigvals.rows(0, max_ind -1))/3.0;
-  // // std::cout << "carl2" << std::endl;
-  //
-  // // Take some values after the jump eigenvalue
-  // arma::vec temp3 = (XtildeS_eigvals.rows(1, max_ind) + XtildeS_eigvals.rows(0, max_ind-1))/2.0;
-  // // std::cout << "carl3" << std::endl;
-  //
-  // // Take some values afthe largest eigenvalue
-  // arma::vec temp4 = (2*XtildeS_eigvals.rows(1, max_ind) + XtildeS_eigvals.rows(0, max_ind-1))/3.0;
-  // // std::cout << "carl4" << std::endl;
-  //
-  // arma::vec temp5 = arma::linspace<arma::vec>(XtildeS_eigvals[max_ind] + XtildeS_eigvals[1]/100, 10*XtildeS_eigvals[max_ind], range);
-  //
-  // arma::vec MuVec = XtildeS_eigvals;
-  // MuVec = arma::join_cols<arma::vec>(MuVec, temp1);
-  // MuVec = arma::join_cols<arma::vec>(MuVec, temp2);
-  // MuVec = arma::join_cols<arma::vec>(MuVec, temp3);
-  // MuVec = arma::join_cols<arma::vec>(MuVec, temp4);
-  // MuVec = arma::join_cols<arma::vec>(MuVec, temp5);
-  // MuVec = arma::unique(MuVec);
-  // MuVec = arma::sort(MuVec);
-  // MuVec = MuVec(arma::find(MuVec > 0));
-
   // Take some values before the smallest eigenvalue
   arma::vec temp1 = arma::linspace<arma::vec>(XtildeS_eigvals[0]/10, XtildeS_eigvals[0] - XtildeS_eigvals[0]/10, XtildeS_eigvals.n_elem);
 
@@ -230,7 +176,7 @@ arma::vec getMuVec(arma::vec Energies){
   // Take some values after the jump eigenvalue
   arma::vec temp3 = arma::linspace<arma::vec>(XtildeS_eigvals[max_ind] + XtildeS_eigvals[max_ind]/10, XtildeS_eigvals[max_ind]*10, XtildeS_eigvals.n_elem);
 
-  // Take some values afthe largest eigenvalue
+  // Take some values after the largest eigenvalue
   arma::vec temp4 = arma::linspace<arma::vec>(XtildeS_eigvals[XtildeS_eigvals.n_elem - 1] + XtildeS_eigvals[XtildeS_eigvals.n_elem - 1]/10, XtildeS_eigvals[XtildeS_eigvals.n_elem - 1]*10, XtildeS_eigvals.n_elem);
 
   arma::vec MuVec = XtildeS_eigvals;
@@ -241,59 +187,6 @@ arma::vec getMuVec(arma::vec Energies){
   MuVec = arma::unique(MuVec);
   MuVec = arma::sort(MuVec);
   MuVec = MuVec(arma::find(MuVec > 0));
-
-
-  // arma::vec XtildeS_eigvals = arma::unique(arma::sort(Energies));
-  //
-  // // Handle the case if there is only one eigenvalue
-  // if(XtildeS_eigvals.n_elem == 1){
-  //   arma::vec MuVec = arma::linspace<arma::vec>(XtildeS_eigvals[0] - XtildeS_eigvals[0]/20, XtildeS_eigvals[0] + XtildeS_eigvals[0]/20, 40);
-  //   return MuVec;
-  // }
-  //
-  // // Figure out where the big jumps in the eigenvalues occur
-  // // XtildeS must have at least two eigenvalues
-  // arma::uvec slice = arma::linspace<arma::uvec>(1, XtildeS_eigvals.n_elem - 1, XtildeS_eigvals.n_elem - 1);
-  // arma::vec ratios = XtildeS_eigvals(slice - 1)/XtildeS_eigvals(slice);
-  // arma::uvec big_jumps = arma::find(ratios < 1e-03);
-  // unsigned int max_ind;
-  //
-  // if(big_jumps.n_elem != 0){
-  //
-  //   // Take the position of the first jump
-  //   max_ind = big_jumps[0] + 1;
-  //
-  // }else{
-  //
-  //   // Take the position the largest eigenvalue
-  //   max_ind = XtildeS_eigvals.n_elem - 1;
-  //
-  // }
-  //
-  // Take some values before the smallest eigenvalue
-  // arma::vec temp1 = arma::linspace<arma::vec>(XtildeS_eigvals[0]/100, XtildeS_eigvals[0]/2 - XtildeS_eigvals[0]/100, XtildeS_eigvals.n_elem);
-  //
-  // // Take some values after the smallest and before the eigenvalue of the first jump
-  // arma::vec temp2 = arma::linspace<arma::vec>(XtildeS_eigvals[0] + XtildeS_eigvals[0]/2, XtildeS_eigvals[max_ind] - XtildeS_eigvals[0]/2, 3*XtildeS_eigvals.n_elem);
-  // // Take some values after the largest eigenvalue
-  // arma::vec temp3 = arma::linspace<arma::vec>(XtildeS_eigvals[max_ind] + XtildeS_eigvals[max_ind]/100, XtildeS_eigvals[max_ind]*10, XtildeS_eigvals.n_elem);
-  // // arma::vec temp3 = arma::linspace<arma::vec>(XtildeS_eigvals[XtildeS_eigvals.n_elem - 1] + XtildeS_eigvals[XtildeS_eigvals.n_elem - 1]/100, XtildeS_eigvals[XtildeS_eigvals.n_elem - 1]*10, XtildeS_eigvals.n_elem);
-
-  // // Take some values before the smallest eigenvalue
-  // double optimal_eigval = XtildeS_eigvals[max_ind];
-  // // Take some values before the big jump
-  // arma::vec temp1 = arma::linspace<arma::vec>(XtildeS_eigvals[max_ind - 1], optimal_eigval - optimal_eigval/10.0, 10);
-  // // Take some values after the big jump
-  // arma::vec temp2;
-  // if(max_ind + 1 <= XtildeS_eigvals.n_elem - 1)
-  //   temp2 = arma::linspace<arma::vec>(optimal_eigval + optimal_eigval/10.0, XtildeS_eigvals[max_ind +1], 10);
-  // arma::vec temp3 = arma::linspace<arma::vec>(XtildeS_eigvals[XtildeS_eigvals.n_elem - 1] + XtildeS_eigvals[XtildeS_eigvals.n_elem - 1]/10, XtildeS_eigvals[XtildeS_eigvals.n_elem - 1]*10, 10);
-//
-  // arma::vec MuVec1 = arma::join_cols<arma::vec>(temp1, XtildeS_eigvals);
-  // arma::vec MuVec2 = arma::join_cols<arma::vec>(temp2, temp3);
-  // arma::vec MuVec = arma::join_cols<arma::vec>(MuVec1, MuVec2);
-  // MuVec = arma::sort(MuVec);
-  // MuVec = MuVec(arma::find(MuVec > 0));
 
   return MuVec;
 
